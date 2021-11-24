@@ -10,8 +10,8 @@
     <name>OPI</name>
 
     <properties>
-         <sonar.organization>pe4enka1606-1</sonar.organization>
-         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.organization>shashasha</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>5.7.1</junit.version>
         <kotlin.version>1.6.0</kotlin.version>
