@@ -25,10 +25,30 @@ public class Main extends Application {
 
     private Parent createMenu(){
         Pane root2 = new Pane();
-        Button RestartButton = new Button();
-        RestartButton.setText("Restart");
-        RestartButton.setTranslateX(900);
-        RestartButton.setTranslateY(80);
+        Button ContinueButton = new Button();
+        ContinueButton.setText("Continue");
+        ContinueButton.setTranslateX(40);
+        ContinueButton.setTranslateY(30);
+        ContinueButton.setMinHeight(60);
+        ContinueButton.setMinWidth(100);
+
+        Button ExitButton = new Button();
+        ExitButton.setText("Exit");
+        ExitButton.setTranslateX(40);
+        ExitButton.setTranslateY(110);
+        ExitButton.setMinHeight(60);
+        ExitButton.setMinWidth(100);
+        ContinueButton.setOnMouseClicked(mouseEvent -> {
+            Stage stage = (Stage) ContinueButton.getScene().getWindow();
+            stage.close();
+        });
+        ExitButton.setOnMouseClicked(mouseEvent -> {
+            Stage stage = (Stage) ContinueButton.getScene().getWindow();
+            stage.close();
+            Stage primaryStage = (Stage) tileGroup.getScene().getWindow();
+            primaryStage.close();
+        });
+        root2.getChildren().addAll(ContinueButton, ExitButton);
         return root2;
     }
 
@@ -174,19 +194,27 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         Scene scene = new Scene(createContent());
-        Scene scene2 = new Scene(createMenu());
+
         primaryStage.setTitle("Шашки");
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.setWidth(1000);
         primaryStage.show();
+
         scene.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ESCAPE){
                 System.out.println("Hello World");
-
-
+                Scene scene2 = new Scene(createMenu());
+                Stage stage = new Stage();
+                stage.setHeight(250);
+                stage.setWidth(200);
+                stage.setResizable(false);
+                stage.setScene(scene2);
+                stage.show();
             }
         });
+
+
     }
 
     private Piece makePiece(PieceType type, int x, int y) {
