@@ -174,7 +174,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         Scene scene = new Scene(createContent());
-        Scene scene2 = new Scene(createMenu());
+
         primaryStage.setTitle("Шашки");
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
@@ -183,8 +183,11 @@ public class Main extends Application {
         scene.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ESCAPE){
                 System.out.println("Hello World");
-
-
+                Scene scene2 = new Scene(createMenu());
+                Stage stage = new Stage();
+                stage.setTitle("New Window");
+                stage.setScene(scene2);
+                stage.show();
             }
         });
     }
