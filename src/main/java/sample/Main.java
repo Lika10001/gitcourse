@@ -7,8 +7,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Main extends Application {
@@ -23,7 +25,7 @@ public class Main extends Application {
     private Group pieceGroup = new Group();
     private AtomicInteger counter = new AtomicInteger();
 
-    private Parent createMenu(){
+    private Parent createMenu(Stage primaryStage){
         Pane root2 = new Pane();
         Button ContinueButton = new Button();
         ContinueButton.setText("Continue");
@@ -32,26 +34,100 @@ public class Main extends Application {
         ContinueButton.setMinHeight(60);
         ContinueButton.setMinWidth(100);
 
+        Button RestartButton = new Button();
+        RestartButton.setText("Restart");
+        RestartButton.setTranslateX(40);
+        RestartButton.setTranslateY(110);
+        RestartButton.setMinHeight(60);
+        RestartButton.setMinWidth(100);
+
+        Button ExitToMainMenuButton = new Button();
+        ExitToMainMenuButton.setText("Exit to main \n    menu");
+        ExitToMainMenuButton.setTranslateX(40);
+        ExitToMainMenuButton.setTranslateY(190);
+        ExitToMainMenuButton.setMinHeight(60);
+        ExitToMainMenuButton.setMinWidth(100);
+
+        ContinueButton.setOnMouseClicked(mouseEvent -> {
+            Stage stage = (Stage) ContinueButton.getScene().getWindow();
+            stage.close();
+
+        });
+
+        RestartButton.setOnMouseClicked(mouseEvent -> {
+            Stage stage = (Stage) RestartButton.getScene().getWindow();
+            stage.close();
+
+
+            primaryStage.show();
+        });
+
+        ExitToMainMenuButton.setOnMouseClicked(mouseEvent -> {
+            Stage stage = (Stage) ContinueButton.getScene().getWindow();
+            stage.close();
+            for (int y = 0; y < HEIGHT; y++) {
+                for (int x = 0; x < WIDTH; x++) {
+                    Tile tile = new Tile((x + y) % 2 == 0, x, y);
+                    board[x][y] = tile;
+
+                    tileGroup.getChildren().add(tile);
+
+                    Piece piece = null;
+
+                    if (y <= 2 && (x + y) % 2 != 0) {
+                        piece = makePiece(PieceType.RED, x, y);
+                    }
+
+                    if (y >= 5 && (x + y) % 2 != 0) {
+                        piece = makePiece(PieceType.WHITE, x, y);
+                    }
+
+                    if (piece != null) {
+                        tile.setPiece(piece);
+                        pieceGroup.getChildren().add(piece);
+                    }
+                }
+            }
+            primaryStage.close();
+        });
+
+        root2.getChildren().addAll(ContinueButton, ExitToMainMenuButton, RestartButton);
+        return root2;
+    }
+
+    private Parent createMainMenu(){
+        Pane root3 = new Pane();
+        Button PlayButton = new Button();
+        PlayButton.setText("Play");
+        PlayButton.setTranslateX(40);
+        PlayButton.setTranslateY(30);
+        PlayButton.setMinHeight(60);
+        PlayButton.setMinWidth(100);
+
         Button ExitButton = new Button();
         ExitButton.setText("Exit");
         ExitButton.setTranslateX(40);
         ExitButton.setTranslateY(110);
         ExitButton.setMinHeight(60);
         ExitButton.setMinWidth(100);
-        ContinueButton.setOnMouseClicked(mouseEvent -> {
-            Stage stage = (Stage) ContinueButton.getScene().getWindow();
-            stage.close();
-        });
+
         ExitButton.setOnMouseClicked(mouseEvent -> {
-            Stage stage = (Stage) ContinueButton.getScene().getWindow();
+            Stage stage = (Stage) ExitButton.getScene().getWindow();
             stage.close();
             Stage primaryStage = (Stage) tileGroup.getScene().getWindow();
             primaryStage.close();
         });
-        root2.getChildren().addAll(ContinueButton, ExitButton);
-        return root2;
-    }
 
+        PlayButton.setOnMouseClicked(mouseEvent -> {
+            Stage stage = (Stage) ExitButton.getScene().getWindow();
+            stage.close();
+            Stage primaryStage = (Stage) tileGroup.getScene().getWindow();
+            primaryStage.show();
+        });
+        root3.getChildren().addAll(PlayButton, ExitButton);
+
+        return root3;
+    }
 
     private Parent createContent() {
         Pane root = new Pane();
@@ -140,50 +216,53 @@ public class Main extends Application {
         int x0 = toBoard(piece.getOldX());
         int y0 = toBoard(piece.getOldY());
         if (counter.get() % 2 == 0) {
-            if (Math.abs(newX - x0) == 1 && newY - y0 == -1) {
-                counter.getAndIncrement();
-                return new MoveResult(MoveType.NORMAL);
-            } else if (Math.abs(newX - x0) == 2 && newY - y0 == -2) {
-
-                int x1 = x0 + (newX - x0) / 2;
-                int y1 = y0 + (newY - y0) / 2;
-
-                if (board[x1][y1].hasPiece() && board[x1][y1].getPiece().getType() != piece.getType()) {
+            if (piece.getType() == PieceType.WHITE) {
+                if ((Math.abs(newX - x0) == 1) && (newY - y0 == -1)) {
                     counter.getAndIncrement();
-                    return new MoveResult(MoveType.KILL, board[x1][y1].getPiece());
-                }
-            } else if (Math.abs(newX - x0) == 2 && y0 - newY == -2) {//можно упростить?
-                int x1 = x0 + (newX - x0) / 2;
-                int y1 = y0 + (newY - y0) / 2;
+                    System.out.println(counter.get());
+                    return new MoveResult(MoveType.NORMAL);
+                } else if (Math.abs(newX - x0) == 2 && newY - y0 == -2) {
 
-                if (board[x1][y1].hasPiece() && board[x1][y1].getPiece().getType() != piece.getType()) {
-                    counter.getAndIncrement();
-                    return new MoveResult(MoveType.KILL, board[x1][y1].getPiece());
+                    int x1 = x0 + (newX - x0) / 2;
+                    int y1 = y0 + (newY - y0) / 2;
+
+                    if (board[x1][y1].hasPiece() && board[x1][y1].getPiece().getType() != piece.getType()) {
+                        counter.getAndIncrement();
+                        return new MoveResult(MoveType.KILL, board[x1][y1].getPiece());
+                    }
+                } else if (Math.abs(newX - x0) == 2 && y0 - newY == -2) {//можно упростить?
+                    int x1 = x0 + (newX - x0) / 2;
+                    int y1 = y0 + (newY - y0) / 2;
+
+                    if (board[x1][y1].hasPiece() && board[x1][y1].getPiece().getType() != piece.getType()) {
+                        counter.getAndIncrement();
+                        return new MoveResult(MoveType.KILL, board[x1][y1].getPiece());
+                    }
                 }
             }
         } else {
-            if (Math.abs(newX - x0) == 1 && newY - y0 == 1) {
-                counter.getAndIncrement();
-                return new MoveResult(MoveType.NORMAL);
-            } else if (Math.abs(newX - x0) == 2 && newY - y0 == 2) {
-                int x1 = x0 + (newX - x0) / 2;
-                int y1 = y0 + (newY - y0) / 2;
-                if (board[x1][y1].hasPiece() && board[x1][y1].getPiece().getType() != piece.getType()) {
+            if (piece.getType() == PieceType.RED) {
+                if (Math.abs(newX - x0) == 1 && newY - y0 == 1) {
                     counter.getAndIncrement();
-                    return new MoveResult(MoveType.KILL, board[x1][y1].getPiece());
-                }
-            } else if (Math.abs(newX - x0) == 2 && y0 - newY == 2) {//можно упростить?
-                int x1 = x0 + (newX - x0) / 2;
-                int y1 = y0 + (newY - y0) / 2;
+                    return new MoveResult(MoveType.NORMAL);
+                } else if (Math.abs(newX - x0) == 2 && newY - y0 == 2) {
+                    int x1 = x0 + (newX - x0) / 2;
+                    int y1 = y0 + (newY - y0) / 2;
+                    if (board[x1][y1].hasPiece() && board[x1][y1].getPiece().getType() != piece.getType()) {
+                        counter.getAndIncrement();
+                        return new MoveResult(MoveType.KILL, board[x1][y1].getPiece());
+                    }
+                } else if (Math.abs(newX - x0) == 2 && y0 - newY == 2) {//можно упростить?
+                    int x1 = x0 + (newX - x0) / 2;
+                    int y1 = y0 + (newY - y0) / 2;
 
-                if (board[x1][y1].hasPiece() && board[x1][y1].getPiece().getType() != piece.getType()) {
-                    counter.getAndIncrement();
-                    return new MoveResult(MoveType.KILL, board[x1][y1].getPiece());
+                    if (board[x1][y1].hasPiece() && board[x1][y1].getPiece().getType() != piece.getType()) {
+                        counter.getAndIncrement();
+                        return new MoveResult(MoveType.KILL, board[x1][y1].getPiece());
+                    }
                 }
             }
         }
-
-        System.out.println(counter.get());
         return new MoveResult(MoveType.NONE);
     }
 
@@ -194,22 +273,24 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         Scene scene = new Scene(createContent());
+        //Scene scene = new Scene(createContent());
+
 
         primaryStage.setTitle("Шашки");
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
-        primaryStage.setWidth(1000);
         primaryStage.show();
 
         scene.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ESCAPE){
-                System.out.println("Hello World");
-                Scene scene2 = new Scene(createMenu());
+                Scene scene2 = new Scene(createMenu(primaryStage));
                 Stage stage = new Stage();
-                stage.setHeight(250);
+                stage.setHeight(310);
                 stage.setWidth(200);
-                stage.setResizable(false);
+
+                scene2.setFill(Color.BLUE);
                 stage.setScene(scene2);
+                stage.setResizable(false);
                 stage.show();
             }
         });
