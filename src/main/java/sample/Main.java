@@ -62,41 +62,31 @@ public class Main extends Application {
         RestartButton.setTranslateX(900);
         RestartButton.setTranslateY(80);
         RestartButton.setPrefSize(70,30);
-
         Button menuButton = new Button();
         menuButton.setText("Menu");
         menuButton.setTranslateX(900);
         menuButton.setTranslateY(30);
         menuButton.setPrefSize(70,30);
-
         menuButton.setOnMouseClicked(mouseEvent -> {
             root.getChildren().addAll(RestartButton);
         });
-
         RestartButton.setOnMouseClicked(mouseEvent -> {
             Stage stage = (Stage) RestartButton.getScene().getWindow();
             stage.hide();
             stage.show();
-
-
             /*
             for (int y = 0; y < HEIGHT; y++) {
                 for (int x = 0; x < WIDTH; x++) {
                     Tile tile = new Tile((x + y) % 2 == 0, x, y);
                     board[x][y] = tile;
-
                     tileGroup.getChildren().add(tile);
-
                     Piece piece = null;
-
                     if (y <= 2 && (x + y) % 2 != 0) {
                         piece = makePiece(PieceType.RED, x, y);
                     }
-
                     if (y >= 5 && (x + y) % 2 != 0) {
                         piece = makePiece(PieceType.WHITE, x, y);
                     }
-
                     if (piece != null) {
                         tile.setPiece(piece);
                         pieceGroup.getChildren().add(piece);
@@ -140,45 +130,56 @@ public class Main extends Application {
         int x0 = toBoard(piece.getOldX());
         int y0 = toBoard(piece.getOldY());
         if (counter.get() % 2 == 0) {
-            if (Math.abs(newX - x0) == 1 && newY - y0 == -1) {
-                counter.getAndIncrement();
-                return new MoveResult(MoveType.NORMAL);
-            } else if (Math.abs(newX - x0) == 2 && newY - y0 == -2) {
-
-                int x1 = x0 + (newX - x0) / 2;
-                int y1 = y0 + (newY - y0) / 2;
-
-                if (board[x1][y1].hasPiece() && board[x1][y1].getPiece().getType() != piece.getType()) {
+            if (piece.getType() == PieceType.WHITE) {
+                if (Math.abs(newX - x0) == 1 && newY - y0 == -1) {
                     counter.getAndIncrement();
-                    return new MoveResult(MoveType.KILL, board[x1][y1].getPiece());
-                }
-            } else if (Math.abs(newX - x0) == 2 && y0 - newY == -2) {//можно упростить?
-                int x1 = x0 + (newX - x0) / 2;
-                int y1 = y0 + (newY - y0) / 2;
+                    return new MoveResult(MoveType.NORMAL);
+                } else if (Math.abs(newX - x0) == 2 && newY - y0 == -2) {
 
-                if (board[x1][y1].hasPiece() && board[x1][y1].getPiece().getType() != piece.getType()) {
-                    counter.getAndIncrement();
-                    return new MoveResult(MoveType.KILL, board[x1][y1].getPiece());
+                    int x1 = x0 + (newX - x0) / 2;
+                    int y1 = y0 + (newY - y0) / 2;
+
+                    if (board[x1][y1].hasPiece() && board[x1][y1].getPiece().getType() != piece.getType()) {
+                        counter.getAndIncrement();
+                        return new MoveResult(MoveType.KILL, board[x1][y1].getPiece());
+                    }
+                } else if (Math.abs(newX - x0) == 2 && y0 - newY == -2) {//можно упростить?
+                    int x1 = x0 + (newX - x0) / 2;
+                    int y1 = y0 + (newY - y0) / 2;
+
+                    if (board[x1][y1].hasPiece() && board[x1][y1].getPiece().getType() != piece.getType()) {
+                        counter.getAndIncrement();
+                        return new MoveResult(MoveType.KILL, board[x1][y1].getPiece());
+                    }
+                    if (newY == 0) {
+                        return new MoveResult(MoveType.Transformate);
+                    }
                 }
             }
         } else {
-            if (Math.abs(newX - x0) == 1 && newY - y0 == 1) {
-                counter.getAndIncrement();
-                return new MoveResult(MoveType.NORMAL);
-            } else if (Math.abs(newX - x0) == 2 && newY - y0 == 2) {
-                int x1 = x0 + (newX - x0) / 2;
-                int y1 = y0 + (newY - y0) / 2;
-                if (board[x1][y1].hasPiece() && board[x1][y1].getPiece().getType() != piece.getType()) {
+            if (piece.getType() == PieceType.RED) {
+                if (Math.abs(newX - x0) == 1 && newY - y0 == 1) {
                     counter.getAndIncrement();
-                    return new MoveResult(MoveType.KILL, board[x1][y1].getPiece());
-                }
-            } else if (Math.abs(newX - x0) == 2 && y0 - newY == 2) {//можно упростить?
-                int x1 = x0 + (newX - x0) / 2;
-                int y1 = y0 + (newY - y0) / 2;
+                    return new MoveResult(MoveType.NORMAL);
+                } else if (Math.abs(newX - x0) == 2 && newY - y0 == 2) {
+                    int x1 = x0 + (newX - x0) / 2;
+                    int y1 = y0 + (newY - y0) / 2;
+                    if (board[x1][y1].hasPiece() && board[x1][y1].getPiece().getType() != piece.getType()) {
+                        counter.getAndIncrement();
+                        return new MoveResult(MoveType.KILL, board[x1][y1].getPiece());
+                    }
+                } else if (Math.abs(newX - x0) == 2 && y0 - newY == 2) {//можно упростить?
+                    int x1 = x0 + (newX - x0) / 2;
+                    int y1 = y0 + (newY - y0) / 2;
 
-                if (board[x1][y1].hasPiece() && board[x1][y1].getPiece().getType() != piece.getType()) {
-                    counter.getAndIncrement();
-                    return new MoveResult(MoveType.KILL, board[x1][y1].getPiece());
+                    if (board[x1][y1].hasPiece() && board[x1][y1].getPiece().getType() != piece.getType()) {
+                        counter.getAndIncrement();
+                        return new MoveResult(MoveType.KILL, board[x1][y1].getPiece());
+                    }
+                    if (newY == 7) {
+                        piece = makePiece(PieceType.LADIES_RED, newX, newY);
+                        return new MoveResult(MoveType.Transformate);
+                    }
                 }
             }
         }
@@ -198,7 +199,6 @@ public class Main extends Application {
         primaryStage.setTitle("Шашки");
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
-        primaryStage.setWidth(1000);
         primaryStage.show();
 
         scene.setOnKeyPressed(event -> {
@@ -253,6 +253,9 @@ public class Main extends Application {
                     board[toBoard(otherPiece.getOldX())][toBoard(otherPiece.getOldY())].setPiece(null);
                     pieceGroup.getChildren().remove(otherPiece);
                     break;
+                case Transformate:
+                    board[newX][newY].setPiece(null);
+                    board[newX][newY].setPiece(piece);
             }
         });
 
