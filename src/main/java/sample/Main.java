@@ -67,13 +67,6 @@ public class Main extends Application {
         ContinueButton.setMinHeight(60);
         ContinueButton.setMinWidth(100);
 
-        Button OptionsButton = new Button();
-        OptionsButton.setText("Options");
-        OptionsButton.setTranslateX(40);
-        OptionsButton.setTranslateY(110);
-        OptionsButton.setMinHeight(60);
-        OptionsButton.setMinWidth(100);
-
         Button ExitToMainMenuButton = new Button();
         ExitToMainMenuButton.setText("Exit ");
         ExitToMainMenuButton.setTranslateX(40);
@@ -85,12 +78,6 @@ public class Main extends Application {
             Stage stage = (Stage) ContinueButton.getScene().getWindow();
             stage.close();
 
-        });
-
-        OptionsButton.setOnMouseClicked(mouseEvent -> {
-            Stage stage = (Stage) OptionsButton.getScene().getWindow();
-            stage.close();
-            primaryStage.show();
         });
 
         ExitToMainMenuButton.setOnMouseClicked(mouseEvent -> {
@@ -122,7 +109,7 @@ public class Main extends Application {
             primaryStage.close();
         });
 
-        root2.getChildren().addAll(ContinueButton, ExitToMainMenuButton, OptionsButton);
+        root2.getChildren().addAll(ContinueButton, ExitToMainMenuButton);
         return root2;
     }
 
@@ -136,41 +123,7 @@ public class Main extends Application {
         ContinueButton.setMinWidth(100);
         return rootWon;
     }
-    /*
-        private Parent createMainMenu(){
-            Pane root3 = new Pane();
-            Button PlayButton = new Button();
-            PlayButton.setText("Play");
-            PlayButton.setTranslateX(40);
-            PlayButton.setTranslateY(30);
-            PlayButton.setMinHeight(60);
-            PlayButton.setMinWidth(100);
 
-            Button ExitButton = new Button();
-            ExitButton.setText("Exit");
-            ExitButton.setTranslateX(40);
-            ExitButton.setTranslateY(110);
-            ExitButton.setMinHeight(60);
-            ExitButton.setMinWidth(100);
-
-            ExitButton.setOnMouseClicked(mouseEvent -> {
-                Stage stage = (Stage) ExitButton.getScene().getWindow();
-                stage.close();
-                Stage primaryStage = (Stage) tileGroup.getScene().getWindow();
-                primaryStage.close();
-            });
-
-            PlayButton.setOnMouseClicked(mouseEvent -> {
-                Stage stage = (Stage) ExitButton.getScene().getWindow();
-                stage.close();
-                Stage primaryStage = (Stage) tileGroup.getScene().getWindow();
-                primaryStage.show();
-            });
-            root3.getChildren().addAll(PlayButton, ExitButton);
-
-            return root3;
-        }
-    */
     private Parent createContent() {
         Pane root = new Pane();
         root.setPrefSize(WIDTH * TILE_SIZE, HEIGHT * TILE_SIZE);
@@ -280,109 +233,6 @@ public class Main extends Application {
 
     private int toBoard(double pixel) {
         return (int)(pixel + TILE_SIZE / 2) / TILE_SIZE;
-    }
-
-
-
-    public static int [][] aI(){
-        int[][] priorityMatrix = new int[8][8];
-        int min;
-        int x = -1, y = -1;
-        int[][] Matrix = new int[8][8];
-        Matrix[3][3] = 1;
-        Matrix[4][4] = 2;
-        for (int i = 0; i < 8; i++){
-            for (int j = 0; j < 8; j++){
-                if (Matrix[i][j] == 1){
-                    if (((j > 1) && (j < 6)) && ((i > 1) && (i < 6))) {
-                        if (Matrix[i - 1][j - 1] == 2){ //верхний левый угол
-                            if (Matrix[i - 2][j - 2] == 0) {
-                                if(priorityMatrix[i-2][j-2] < 5) {
-                                    priorityMatrix[i - 2][j - 2] = PRIORITY_FOR_NOT_REPLACING_FOR_KILL;// приоритет на сбивание(максимальный)
-                                }
-                            }
-                        } else{
-                            if (priorityMatrix[i - 1][j - 1] < 1) {
-                                priorityMatrix[i - 1][j - 1] = PRIORITY_FOR_NOT_REPLACING;
-                            }
-                        }
-                        if (Matrix[i - 1][j + 1] == 2){ //верхний правый угол
-                            if (Matrix[i - 2][j + 2] == 0) {
-                                if(priorityMatrix[i - 2][j + 2] < 5) {
-                                    priorityMatrix[i - 2][j + 2] = PRIORITY_FOR_NOT_REPLACING_FOR_KILL;// приоритет на сбивание(максимальный)
-                                }
-                            }
-                        } else{
-                            if (priorityMatrix[i - 1][j + 1] < 1) {
-                                priorityMatrix[i - 1][j + 1] = PRIORITY_FOR_NOT_REPLACING;
-                            }
-                        }
-                        if (Matrix[i + 1][j - 1] == 2){ //нижний левый угол
-                            if (Matrix[i + 2][j - 2] == 0) {
-                                if (((i > 3) && (j > 3)) || ((i < 5) && (j < 5)) ) {
-/* if (...){
-if (priorityMatrix[i + 2][j - 2] < 4) {
-priorityMatrix[i + 2][j - 2] = PRIORITY_FOR_NOT_REPLACING_FOR_KILL_AND_DYING;
-}
-}*/
-                                } else {
-                                    if (priorityMatrix[i + 2][j - 2] < 5) {
-                                        priorityMatrix[i + 2][j - 2] = PRIORITY_FOR_NOT_REPLACING_FOR_KILL;// приоритет на сбивание(максимальный)
-                                    }
-                                }
-                            }//...
-                        } else if (Matrix[i + 1][j - 1] == 0){
-                            if (((Matrix[i][j - 2] == 2) || (Matrix[i][j - 2] == 1)) && ((Matrix[i + 2][j] == 2) || (Matrix[i + 2][j] == 1)) || ((Matrix[i + 2][j] == 0) && (Matrix[i][j - 2] == 0))) {
-                                if (priorityMatrix[i + 1][j - 1] < 2) {
-                                    priorityMatrix[i + 1][j - 1] = PRIORITY_FOR_REPLACING_WITHOUT_ISSUES;
-                                }
-                            } else if(((Matrix[i][j - 2] == 2) && (Matrix[i + 2][j] == 0)) || ((Matrix[i][j - 2] == 0) && (Matrix[i + 2][j] == 2)) || (Matrix[i + 2][j - 2] == 2)){
-                                if (priorityMatrix[i + 1][j - 1] < 1) {
-                                    priorityMatrix[i + 1][j - 1] = PRIORITY_FOR_REPLACING_AND_DYING;
-                                }
-                            }
-                            if (((Matrix[i + 2][j - 2] == 2))){
-                                priorityMatrix[i + 1][j - 1] = PRIORITY_FOR_REPLACING_AND_DYING;
-                            }
-                        }
-                        if (Matrix[i + 1][j + 1] == 2){ //нижний правый угол
-                            if (Matrix[i + 2][j + 2] == 0) {
-                                if(priorityMatrix[i + 2][j + 2] < 5) {
-                                    priorityMatrix[i + 2][j + 2] = PRIORITY_FOR_NOT_REPLACING_FOR_KILL;// приоритет на сбивание(максимальный)
-                                }
-                            }
-                        } else if (Matrix[i + 1][j + 1] == 0){
-                            if (((Matrix[i][j + 2] == 2) || (Matrix[i][j + 2] == 1)) && ((Matrix[i + 2][j] == 2) || (Matrix[i + 2][j] == 1)) || ((Matrix[i + 2][j] == 0) && (Matrix[i][j + 2] == 0))) {
-                                if (priorityMatrix[i + 1][j + 1] < 1) {
-                                    priorityMatrix[i + 1][j + 1] = PRIORITY_FOR_REPLACING_WITHOUT_ISSUES;
-                                }
-                            } else if(((Matrix[i][j + 2] == 2) && (Matrix[i + 2][j] == 0)) || ((Matrix[i][j + 2] == 0) && (Matrix[i + 2][j] == 2)) || (Matrix[i + 2][j + 2] == 2)){
-                                if (priorityMatrix[i + 1][j + 1] < 1) {
-                                    priorityMatrix[i + 1][j + 1] = PRIORITY_FOR_REPLACING_AND_DYING;
-                                }
-                            }
-                            if (((Matrix[i + 2][j + 2] == 2))){
-                                priorityMatrix[i + 1][j + 1] = PRIORITY_FOR_REPLACING_AND_DYING;
-                            }
-                        }
-                    } else {
-                    }
-                }
-            }
-        }
-        min = 0;
-        for (int i = 0; i < 8; i++){
-            for (int j = 0; j < 8; j++){
-                if (priorityMatrix[i][j] > min){
-                    min = priorityMatrix[i][j];
-                    x = j;
-                    y = i;
-                } else if (priorityMatrix[i][j] == min){
-
-                }
-            }
-        }
-        return priorityMatrix;
     }
 
     @Override
