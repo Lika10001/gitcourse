@@ -56,45 +56,6 @@ public class Main extends Application {
     private Parent createContent() {
         Pane root = new Pane();
         root.setPrefSize(WIDTH * TILE_SIZE, HEIGHT * TILE_SIZE);
-/*
-        Button RestartButton = new Button();
-        RestartButton.setText("menu");
-        RestartButton.setTranslateX(900);
-        RestartButton.setTranslateY(80);
-        RestartButton.setPrefSize(70,30);
-        Button menuButton = new Button();
-        menuButton.setText("Menu");
-        menuButton.setTranslateX(900);
-        menuButton.setTranslateY(30);
-        menuButton.setPrefSize(70,30);
-        menuButton.setOnMouseClicked(mouseEvent -> {
-            root.getChildren().addAll(RestartButton);
-        });
-        RestartButton.setOnMouseClicked(mouseEvent -> {
-            Stage stage = (Stage) RestartButton.getScene().getWindow();
-            stage.hide();
-            stage.show();
-            /*
-            for (int y = 0; y < HEIGHT; y++) {
-                for (int x = 0; x < WIDTH; x++) {
-                    Tile tile = new Tile((x + y) % 2 == 0, x, y);
-                    board[x][y] = tile;
-                    tileGroup.getChildren().add(tile);
-                    Piece piece = null;
-                    if (y <= 2 && (x + y) % 2 != 0) {
-                        piece = makePiece(PieceType.RED, x, y);
-                    }
-                    if (y >= 5 && (x + y) % 2 != 0) {
-                        piece = makePiece(PieceType.WHITE, x, y);
-                    }
-                    if (piece != null) {
-                        tile.setPiece(piece);
-                        pieceGroup.getChildren().add(piece);
-                    }
-                }
-           }
-        } );
-*/
         root.getChildren().addAll(tileGroup, pieceGroup);
 
         for (int y = 0; y < HEIGHT; y++) {
